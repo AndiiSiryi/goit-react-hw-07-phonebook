@@ -1,33 +1,41 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { nanoid } from 'nanoid';
 import css from './ContactForm.module.css';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { selectContacts } from 'redux/contacts/contacts-selector';
-import { addContactAction } from 'redux/contacts/contacts-slice';
+// import { addContactAction } from 'redux/contacts/contacts-slice';
+import {
+  addContactsThunk,
+  getContactsThunk,
+} from 'redux/contacts/contacts-thunk';
 
-const ContactForm = ({ addContact }) => {
+const ContactForm = () => {
   const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
+  const [phone, setPhone] = useState('');
 
   const validateName = name => {
     const nameRegex = /^[a-zA-Zа-яА-ЯїіІ'Ї\s]+$/;
     return nameRegex.test(name);
   };
 
-  const validateNumber = number => {
-    const phoneRegex = /^\d{7}$|^\d{3}-\d{2}-\d{2}$/;
-    return phoneRegex.test(number);
+  const validateNumber = phone => {
+    // const phoneRegex = /^\d{7}$|^\d{3}-\d{2}-\d{2}$/;
+    const phoneRegex = /^\d{3}-\d{3}-\d{4}$/;
+    return phoneRegex.test(phone);
   };
 
   const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getContactsThunk());
+  }, [dispatch]);
 
   const handleChange = e => {
     const { name, value } = e.target;
     if (name === 'name') {
       setName(value);
-    } else if (name === 'number') {
-      setNumber(value);
+    } else if (name === 'phone') {
+      setPhone(value);
     }
   };
 
@@ -40,16 +48,16 @@ const ContactForm = ({ addContact }) => {
       return alert('Name may contain only letters, apostrophe, and spaces');
     }
 
-    if (!validateNumber(number)) {
+    if (!validateNumber(phone)) {
       return alert(
-        'The phone number must contain only 7 digits, example: XXXXXXX or XXX-XX-XX.'
+        'The phone number must contain only 10 digits, example: XXX-XXX-XXXX.'
       );
     }
 
     const newContact = {
       id: nanoid(4),
       name: name,
-      number: number,
+      phone: phone,
     };
 
     if (
@@ -60,9 +68,9 @@ const ContactForm = ({ addContact }) => {
     ) {
       return alert(`${name} is already in contacts`);
     }
-    dispatch(addContactAction(newContact));
+    dispatch(addContactsThunk(newContact));
     setName('');
-    setNumber('');
+    setPhone('');
   };
 
   return (
@@ -85,8 +93,8 @@ const ContactForm = ({ addContact }) => {
           className={css.input}
           id="numberInput"
           type="tel"
-          name="number"
-          value={number}
+          name="phone"
+          value={phone}
           onChange={handleChange}
           required
         />

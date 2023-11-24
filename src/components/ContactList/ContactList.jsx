@@ -8,9 +8,9 @@ const ContactList = () => {
   const contacts = useSelector(selectFilteredContacts);
   return (
     <ul className={css.list}>
-      {contacts.map(({ id, name, number }) => {
+      {contacts.map(({ id, name, phone }) => {
         return (
-          <ContactItem key={id} name={name} number={number} contactId={id} />
+          <ContactItem key={id} name={name} phone={phone} contactId={id} />
         );
       })}
     </ul>
