@@ -1,0 +1,23 @@
+.list {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  font-size: 18px;
+  font-weight: 500;
+}
+.buttonDelet {
+  height: 22px;
+  border: none;
+  border-radius: 6px;
+  box-shadow: rgba(0, 0, 0, 0.75) 2px 2px 5px 0px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}

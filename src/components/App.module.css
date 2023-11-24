@@ -1,0 +1,7 @@
+.styleApp {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin: 20px auto;
+  width: 500px;
+}
