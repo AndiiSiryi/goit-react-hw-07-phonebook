@@ -9,10 +9,12 @@ import {
   addContactsThunk,
   getContactsThunk,
 } from 'redux/contacts/contacts-thunk';
+import { Loader } from 'components/Loader/Loader';
 
 const ContactForm = () => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const validateName = name => {
     const nameRegex = /^[a-zA-Zа-яА-ЯїіІ'Ї\s]+$/;
@@ -41,7 +43,7 @@ const ContactForm = () => {
 
   const contacts = useSelector(selectContacts);
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
 
     if (!validateName(name)) {
@@ -68,9 +70,19 @@ const ContactForm = () => {
     ) {
       return alert(`${name} is already in contacts`);
     }
-    dispatch(addContactsThunk(newContact));
-    setName('');
-    setPhone('');
+    try {
+      setLoading(true);
+      await dispatch(addContactsThunk(newContact));
+      setName('');
+      setPhone('');
+    } catch (error) {
+      alert(`Error: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
+    // dispatch(addContactsThunk(newContact));
+    // setName('');
+    // setPhone('');
   };
 
   return (
@@ -100,7 +112,7 @@ const ContactForm = () => {
         />
       </label>
       <button className={css.button} type="submit">
-        Add Contact
+        {loading ? <Loader /> : 'Add Contact'}
       </button>
     </form>
   );
