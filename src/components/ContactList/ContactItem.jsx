@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 // import { deleteContactAction } from 'redux/contacts/contacts-slice';
 import { useDispatch } from 'react-redux';
 import { deleteContactsThunk } from 'redux/contacts/contacts-thunk';
+import { Notify } from 'notiflix';
 
 const ContactItem = ({ name, phone, contactId }) => {
   const dispatch = useDispatch();
@@ -13,6 +14,7 @@ const ContactItem = ({ name, phone, contactId }) => {
     try {
       setLoading(true);
       await dispatch(deleteContactsThunk(contactId));
+      Notify.info(`Contact "${name}" deleted`);
     } catch (error) {
       alert(`Error: ${error.message}`);
     } finally {

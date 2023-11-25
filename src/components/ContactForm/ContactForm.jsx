@@ -10,6 +10,7 @@ import {
   getContactsThunk,
 } from 'redux/contacts/contacts-thunk';
 import { Loader } from 'components/Loader/Loader';
+import { Notify } from 'notiflix';
 
 const ContactForm = () => {
   const [name, setName] = useState('');
@@ -47,13 +48,15 @@ const ContactForm = () => {
     e.preventDefault();
 
     if (!validateName(name)) {
-      return alert('Name may contain only letters, apostrophe, and spaces');
+      Notify.failure('Name may contain only letters, apostrophe, and spaces');
+      return;
     }
 
     if (!validateNumber(phone)) {
-      return alert(
+      Notify.failure(
         'The phone number must contain only 10 digits, example: XXX-XXX-XXXX.'
       );
+      return;
     }
 
     const newContact = {
@@ -68,15 +71,19 @@ const ContactForm = () => {
           contact.name.toLowerCase().trim() === name.toLowerCase().trim()
       )
     ) {
-      return alert(`${name} is already in contacts`);
+      Notify.failure(`${name} is already in contacts`);
+      return;
     }
     try {
       setLoading(true);
       await dispatch(addContactsThunk(newContact));
       setName('');
       setPhone('');
+      Notify.success(`Contact "${newContact.name}"  added successfully`);
     } catch (error) {
-      alert(`Error: ${error.message}`);
+      Notify.error(
+        `Contact "${newContact.name}" not added.  Error: ${error.message}`
+      );
     } finally {
       setLoading(false);
     }
